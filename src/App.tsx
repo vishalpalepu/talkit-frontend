@@ -5,7 +5,8 @@ import SettingPage from "./Pages/SettingPage"
 import RegisterPage from "./Pages/RegisterPage"
 import LoginPage from "./Pages/LoginPage"
 import ProfilePage from "./Pages/ProfilePage"
-import useAuthCheck from "./store/storeAppdata"
+import useAuthCheck from "./store/useAuthCheck"
+import { Toaster } from 'react-hot-toast';
 
 
 const App : React.FC = () => {
@@ -24,7 +25,7 @@ const App : React.FC = () => {
     );
 }
 
-    return (
+    return (<>
         <BrowserRouter>
 		<Routes>
       <Route
@@ -49,6 +50,8 @@ const App : React.FC = () => {
       />
     </Routes>
 	</BrowserRouter>
+  <Toaster/>
+  </>
     );
 }
 

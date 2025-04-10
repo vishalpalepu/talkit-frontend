@@ -7,7 +7,7 @@ import { motion, AnimatePresence } from "framer-motion";
 import PasswordCheckList from "../components/PasswordCheckList";
 import passwordCheckRules from "../utils/passwordCheckRules";
 import { useNavigate } from "react-router-dom";
-import useAuthCheck from "../store/storeAppdata";
+import useAuthCheck from "../store/useAuthCheck";
 import { Visibility, VisibilityOff } from "@mui/icons-material";
 
 type PasswordCheckRules = {
@@ -49,12 +49,12 @@ const RegisterPage= () => {
     formState: { errors },
   } = useForm<RegisterFormData>({ resolver: yupResolver(schema) });
 
-  const {signUp} =  useAuthCheck()
+  const {signUp,isSigningUp,checkAuth,userAuth} =  useAuthCheck()
   const navigate = useNavigate();
   const password = watch("password");
   const name = watch("name");
   const [showChecklist, setShowChecklist] = useState(false);
-   const [showPassword, setShowPassword] = useState(false);
+  const [showPassword, setShowPassword] = useState(false);
   const rules:PasswordCheckRules = passwordCheckRules(password, name);
   const allValid = Object.values(rules).every(Boolean);
 
@@ -64,10 +64,10 @@ const RegisterPage= () => {
 
   const onSubmit = (data:RegisterFormData) => {
     signUp(data);
-    console.log("a new User has registered ");
-    alert("a new User has registered ");
-    navigate("/");
   };
+  useEffect(()=>{
+    checkAuth();
+  },[userAuth,navigate,checkAuth])
 
   return (
     <div style={{ display: "flex", alignItems: "center", justifyContent: "center", minHeight: "100vh", background: "linear-gradient(to bottom right, #b39ddb, #f8bbd0)" }}>
@@ -118,7 +118,7 @@ const RegisterPage= () => {
               />
               <TextField
                 label="Password"
-                type="password"
+                type={showPassword?"text":"password"}
                 fullWidth
                 size="small"
                 {...register("password")}
@@ -135,7 +135,7 @@ const RegisterPage= () => {
                 }}
               />
 
-              <div style={{ display: "flex", justifyContent: "center" }}>
+              {/* <div style={{ display: "flex", justifyContent: "center" }}>
                 <Button
                   variant="contained"
                   type="submit"
@@ -143,7 +143,39 @@ const RegisterPage= () => {
                 >
                   SIGN UP
                 </Button>
-              </div>
+              </div> */}
+<div style={{ display: "flex", justifyContent: "center" }}>
+  <motion.div
+    animate={{
+      boxShadow: isSigningUp
+        ? [
+            "0 0 10px 0 rgba(171, 71, 188, 0.5)",
+            "0 0 20px 5px rgba(171, 71, 188, 0.8)",
+            "0 0 10px 0 rgba(171, 71, 188, 0.5)"
+          ]
+        : "none",
+    }}
+    transition={{
+      duration: 1,
+      repeat: Infinity,
+      repeatType: "loop",
+    }}
+    style={{ borderRadius: 8 }}
+  >
+    <Button
+      variant="contained"
+      type="submit"
+      disabled={isSigningUp}
+      style={{
+        backgroundColor: "#AB47BC",
+        color: "#fff",
+        minWidth: 140,
+      }}
+    >
+      {isSigningUp ? "SIGNING UP..." : "SIGN UP"}
+    </Button>
+  </motion.div>
+</div>
             </form>
           </div>
         </div>
