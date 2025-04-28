@@ -1,6 +1,7 @@
 import {create} from "zustand";
 import api from "../lib/axios";
 import toast from "react-hot-toast";
+import { imageListClasses } from "@mui/material";
 
 interface chatState {
     messages : string[],
@@ -11,6 +12,7 @@ interface chatState {
     getUsers : () => Promise<void>,
     getMessages : (userId : string) =>Promise<void>
     setSelectedUser : (selectUser : UserData | null) => void
+    sendMessage : (messageData : {text : string , imageFile : File | null }) => Promise<void>
 }
 
 type UserData = {
@@ -21,7 +23,7 @@ type UserData = {
     _id : string,
 }
 
-const useChatState = create<chatState>((set)=>({
+const useChatState = create<chatState>((set,get)=>({
     messages : [],
     users : [],
     selectedUser : null,
@@ -56,6 +58,21 @@ const useChatState = create<chatState>((set)=>({
     },
     setSelectedUser : (selectUser : UserData | null)=> {
         set({selectedUser : selectUser});
+    },
+
+    sendMessage : async (messageData : {text : string , imageFile : File | null })=>{
+        try{
+            const {selectedUser, messages } = get();
+            if(selectedUser){
+                const formData = new FormData();
+            const res = await api.post(`/message/send/${selectedUser._id}`, messageData);
+            console.log(res.data);
+            set({messages : [...messages , res.data]});
+            }
+        }catch(err){
+            console.log(err);
+            set({messages : []})
+        }
     }
 }))
 

@@ -7,7 +7,7 @@ import {
   Stack,
   Typography,
 } from "@mui/material";
-import useChatState from "../store/useChatState"; // Update this path if needed
+import useChatState from "../store/useChatState";
 
 const Sidebar = () => {
   const {
@@ -15,17 +15,25 @@ const Sidebar = () => {
     isUsersLoading,
     getUsers,
     selectedUser,
-    setSelectedUser,
+    setSelectedUser, // make sure this is part of your store
   } = useChatState();
 
-  
+  const onlineUsers :any = [];
 
   useEffect(() => {
     getUsers();
-  }, []);
+  }, [getUsers]);
 
   return (
-    <Box sx={{ width: 300, height: "calc(100vh - 64px)", overflowY: "auto", bgcolor: "#f3e5f5", borderRight: "1px solid #ccc" }}>
+    <Box
+      sx={{
+        width: 300,
+        height: "calc(100vh - 64px)",
+        overflowY: "auto",
+        bgcolor: "#f3e5f5",
+        borderRight: "1px solid #ccc",
+      }}
+    >
       <Typography variant="h6" sx={{ p: 2, color: "#6A1B9A" }}>
         Chats
       </Typography>
@@ -47,11 +55,34 @@ const Sidebar = () => {
               alignItems: "center",
               p: 1.5,
               cursor: "pointer",
-              backgroundColor: selectedUser?._id === user._id ? "#E1BEE7" : "transparent",
+              backgroundColor:
+                selectedUser?._id === user._id ? "#E1BEE7" : "transparent",
               "&:hover": { backgroundColor: "#F3E5F5" },
             }}
           >
-            <Avatar src={user.profilePic} sx={{ mr: 1.5 }} />
+            {/* Avatar with online status dot */}
+            <Box sx={{ position: "relative", mr: 1.5 }}>
+              <Avatar
+                src={user.profilePic || "/avatar.png"}
+                alt={user.name}
+                sx={{ width: 48, height: 48 }}
+              />
+              {onlineUsers?.includes(user._id) && (
+                <Box
+                  sx={{
+                    position: "absolute",
+                    bottom: 0,
+                    right: 0,
+                    width: 12,
+                    height: 12,
+                    bgcolor: "#4caf50", // green
+                    borderRadius: "50%",
+                    border: "2px solid white",
+                  }}
+                />
+              )}
+            </Box>
+
             <Box>
               <Typography variant="subtitle1" fontWeight="bold">
                 {user.name || "Unknown"}

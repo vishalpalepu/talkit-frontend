@@ -41,7 +41,7 @@ type RegisterFormData = {
   password : string
 }
 
-const RegisterPage= () => {
+const RegisterPage : React.FC = () => {
   const {
     register,
     handleSubmit,

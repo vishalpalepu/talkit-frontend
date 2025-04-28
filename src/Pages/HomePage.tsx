@@ -1,8 +1,10 @@
+import React from "react";
 import Navbar from "../components/Navbar";
 import Sidebar from "../components/SideBar";
-import { Box, Typography } from "@mui/material";
+import { Box } from "@mui/material";
 import useChatState from "../store/useChatState";
- // If you’ve built it
+import NoChatSelected from "../components/NoChatSelected";
+import ChatContainer from "../components/ChatWindow";
 
 const HomePage: React.FC = () => {
   const { selectedUser } = useChatState();
@@ -10,22 +12,18 @@ const HomePage: React.FC = () => {
   return (
     <>
       <Navbar />
-      <Box display="flex" height="100vh">
+      <Box display="flex" height="calc(100vh - 64px)">
         <Sidebar />
-        <Box flex={1} display="flex" justifyContent="center" alignItems="center">
+        <Box
+          flex={1}
+          display="flex"
+          justifyContent="center"
+          alignItems="center"
+        >
           {selectedUser ? (
-            <div> to do the work</div>
+            <ChatContainer/>
           ) : (
-            <Box textAlign="center">
-              <img
-                src="https://res.cloudinary.com/dcykirrjp/image/upload/v1744297375/yiqqevwjp8ifh4gkowkk.png"
-                alt="Talkit Logo"
-                style={{ width: 200, marginBottom: 16 }}
-              />
-              <Typography variant="h5" color="text.secondary">
-                No chat selected
-              </Typography>
-            </Box>
+            <NoChatSelected />
           )}
         </Box>
       </Box>

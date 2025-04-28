@@ -18,7 +18,7 @@ const schema = yup.object().shape({
   password : yup.string().required("password is required")
 })
 
-const LoginPage = () => {
+const LoginPage : React.FC= () => {
   const {
     handleSubmit,
     watch,
