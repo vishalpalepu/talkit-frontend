@@ -9,17 +9,6 @@ import useChatState from "../store/useChatState";
 const ChatWindow: React.FC = () => {
   const { selectedUser } = useChatState();
 
-  // Ensure sendMessage and sendImage are implemented in your Zustand store.
-  const handleSendMessage = (text: string) => {
-    // Replace with your sendMessage logic
-    // sendMessage(text);
-  };
-
-  const handleSendImage = (file: File) => {
-    // Replace with your sendImage logic
-    // sendImage(file);
-  };
-
   return (
     <Box
       sx={{
@@ -31,8 +20,7 @@ const ChatWindow: React.FC = () => {
     >
       <ChatHeader />
       <Messages />
-      <ChatInput
-      />
+      <ChatInput/>
     </Box>
   );
 };

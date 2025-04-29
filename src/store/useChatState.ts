@@ -48,6 +48,7 @@ const useChatState = create<chatState>((set,get)=>({
         try{
             set({isMessagesLoading : true})
             const res = await api.get(`message/getAllMessages/${userId}`)
+            console.log(res.data.messages);
             set({messages : res.data.messages});
         }catch(err){
             console.log(err);
