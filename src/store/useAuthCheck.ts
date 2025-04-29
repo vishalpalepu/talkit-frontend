@@ -64,7 +64,6 @@ const useAuthCheck = create<AuthState>((set)=>({
             const res = await api.post("/auth/login",data);
             if(res.data.success) toast.success(res.data.message);
             if(res.data.success === false) toast.error(res.data.message);
-            console.log(res.data.success);
             set({userAuth : res.data.user});
         }catch(err){
             console.log(err);

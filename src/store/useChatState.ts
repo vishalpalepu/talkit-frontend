@@ -65,9 +65,19 @@ const useChatState = create<chatState>((set,get)=>({
             const {selectedUser, messages } = get();
             if(selectedUser){
                 const formData = new FormData();
-            const res = await api.post(`/message/send/${selectedUser._id}`, messageData);
-            console.log(res.data);
-            set({messages : [...messages , res.data]});
+                formData.append("text",messageData.text);
+                if(messageData.imageFile){
+                    formData.append("image",messageData.imageFile);
+                }
+                // sending the data in the form format to the backend 
+                // now need to properly take out the data in the backend 
+                const res = await api.post(`/message/send/${selectedUser._id}`,formData,{
+                    headers : {
+                        "Content-Type": "multipart/form-data" 
+                    },
+                    withCredentials : true,
+                })
+                if(res.data.success) toast.success(res.data.message);
             }
         }catch(err){
             console.log(err);
