@@ -9,6 +9,7 @@ interface chatState {
     selectedUser : UserData | null,
     isUsersLoading : boolean,
     isMessagesLoading : boolean,
+    isMessageSending : boolean,
     getUsers : () => Promise<void>,
     getMessages : (userId : string) =>Promise<void>
     setSelectedUser : (selectUser : UserData | null) => void
@@ -29,6 +30,7 @@ const useChatState = create<chatState>((set,get)=>({
     selectedUser : null,
     isUsersLoading : false,
     isMessagesLoading : false,
+    isMessageSending : false,
 
     getUsers : async () =>{
         try{
@@ -48,7 +50,6 @@ const useChatState = create<chatState>((set,get)=>({
         try{
             set({isMessagesLoading : true})
             const res = await api.get(`message/getAllMessages/${userId}`)
-            console.log(res.data.messages);
             set({messages : res.data.messages});
         }catch(err){
             console.log(err);
@@ -64,6 +65,7 @@ const useChatState = create<chatState>((set,get)=>({
     sendMessage : async (messageData : {text : string , imageFile : File | null })=>{
         try{
             const {selectedUser, messages } = get();
+            set({isMessageSending : true});
             if(selectedUser){
                 const formData = new FormData();
                 formData.append("text",messageData.text);
@@ -79,10 +81,14 @@ const useChatState = create<chatState>((set,get)=>({
                     withCredentials : true,
                 })
                 if(res.data.success) toast.success(res.data.message);
+                set({messages : [...messages,res.data.data]})
             }
+            else set({isMessageSending : false})
         }catch(err){
             console.log(err);
             set({messages : []})
+        }finally{
+            set({isMessageSending : false})
         }
     }
 }))

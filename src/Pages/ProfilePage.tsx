@@ -41,7 +41,7 @@ const {updatePhoto,checkAuth} = useAuthCheck();
   };
   useEffect(()=>{
     checkAuth();
-  },[userAuth,checkAuth,updatePhoto,isUpdatingProfile])
+  },[userAuth,updatePhoto,isUpdatingProfile])
 
   return (
     <>

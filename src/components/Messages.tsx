@@ -50,113 +50,116 @@
 // };
 
 // export default Messages;
-import React, { useEffect } from "react";
-import { Box, Typography } from "@mui/material";
-import useChatState from "../store/useChatState";
-import useAuthState from "../store/useAuthCheck";
 
-const isOnlyEmoji = (text: string): boolean => {
-  if (!text) return false;
-  const emojiRegex =
-    /^(?:\p{Emoji_Presentation}|\p{Extended_Pictographic}|\p{Emoji})+$/gu;
-  const stripped = text.trim().replace(/\s+/g, "");
-  return emojiRegex.test(stripped);
-};
+// 2nd trial successful
 
-const Messages: React.FC = () => {
-  const {
-    messages,
-    selectedUser,
-    getMessages,
-    isMessagesLoading,
-  } = useChatState();
+// import React, { useEffect } from "react";
+// import { Box, Typography } from "@mui/material";
+// import useChatState from "../store/useChatState";
+// import useAuthState from "../store/useAuthCheck";
 
-  const { userAuth } = useAuthState();
+// const isOnlyEmoji = (text: string): boolean => {
+//   if (!text) return false;
+//   const emojiRegex =
+//     /^(?:\p{Emoji_Presentation}|\p{Extended_Pictographic}|\p{Emoji})+$/gu;
+//   const stripped = text.trim().replace(/\s+/g, "");
+//   return emojiRegex.test(stripped);
+// };
 
-  useEffect(() => {
-    if (selectedUser?._id) {
-      getMessages(selectedUser._id);
-    }
-  }, [selectedUser?._id]);
+// const Messages: React.FC = () => {
+//   const {
+//     messages,
+//     selectedUser,
+//     getMessages,
+//     isMessagesLoading,
+//   } = useChatState();
 
-  return (
-    <Box
-      sx={{
-        flex: 1,
-        overflowY: "auto",
-        p: 2,
-        backgroundColor: "#121212",
-      }}
-    >
-      {isMessagesLoading ? (
-        <Typography variant="body2" color="gray" align="center">
-          Loading messages...
-        </Typography>
-      ) : messages.length === 0 ? (
-        <Typography variant="body2" color="gray" align="center">
-          No messages yet.
-        </Typography>
-      ) : (
-        messages.map((msg: any, index: number) => {
-          const isSentByMe = msg.senderID === userAuth?._id;
+//   const { userAuth } = useAuthState();
 
-          return (
-            <Box
-              key={index}
-              sx={{
-                display: "flex",
-                justifyContent: isSentByMe ? "flex-end" : "flex-start",
-                mb: 1,
-              }}
-            >
-              <Box
-                sx={{
-                  bgcolor: isSentByMe ? "#d81b60" : "#6a1b9a",
-                  color: "white",
-                  p: 1.2,
-                  borderRadius: 2,
-                  maxWidth: "70%",
-                  wordBreak: "break-word",
-                }}
-              >
+//   useEffect(() => {
+//     if (selectedUser?._id) {
+//       getMessages(selectedUser._id);
+//     }
+//   }, [selectedUser?._id]);
 
-                {msg.image && (
-                  <Box mt={msg.text ? 1 : 0}>
-                    <img
-                      src={msg.image}
-                      alt="sent"
-                      style={{
-                        maxWidth: "200px",
-                        maxHeight: "200px",
-                        borderRadius: "8px",
-                      }}
-                    />
-                  </Box>
-                )}
+//   return (
+//     <Box
+//       sx={{
+//         flex: 1,
+//         overflowY: "auto",
+//         p: 2,
+//         backgroundColor: "#121212",
+//       }}
+//     >
+//       {isMessagesLoading ? (
+//         <Typography variant="body2" color="gray" align="center">
+//           Loading messages...
+//         </Typography>
+//       ) : messages.length === 0 ? (
+//         <Typography variant="body2" color="gray" align="center">
+//           No messages yet.
+//         </Typography>
+//       ) : (
+//         messages.map((msg: any, index: number) => {
+//           const isSentByMe = msg.senderID === userAuth?._id;
+
+//           return (
+//             <Box
+//               key={index}
+//               sx={{
+//                 display: "flex",
+//                 justifyContent: isSentByMe ? "flex-end" : "flex-start",
+//                 mb: 1,
+//               }}
+//             >
+//               <Box
+//                 sx={{
+//                   bgcolor: isSentByMe ? "#d81b60" : "#6a1b9a",
+//                   color: "white",
+//                   p: 1.2,
+//                   borderRadius: 2,
+//                   maxWidth: "70%",
+//                   wordBreak: "break-word",
+//                 }}
+//               >
+
+//                 {msg.image && (
+//                   <Box mt={msg.text ? 1 : 0}>
+//                     <img
+//                       src={msg.image}
+//                       alt="sent"
+//                       style={{
+//                         maxWidth: "200px",
+//                         maxHeight: "200px",
+//                         borderRadius: "8px",
+//                       }}
+//                     />
+//                   </Box>
+//                 )}
 
 
-                {msg.text && (
-                  <Typography
-                    variant="body2"
-                    sx={{
-                      fontSize: isOnlyEmoji(msg.text) ? "2rem" : "1rem",
-                      lineHeight: 1.5,
-                      textAlign: isSentByMe ? "right" : "left",
-                    }}
-                  >
-                    {msg.text}
-                  </Typography>
-                )}
-              </Box>
-            </Box>
-          );
-        })
-      )}
-    </Box>
-  );
-};
+//                 {msg.text && (
+//                   <Typography
+//                     variant="body2"
+//                     sx={{
+//                       fontSize: isOnlyEmoji(msg.text) ? "2rem" : "1rem",
+//                       lineHeight: 1.5,
+//                       textAlign: isSentByMe ? "right" : "left",
+//                     }}
+//                   >
+//                     {msg.text}
+//                   </Typography>
+//                 )}
+//               </Box>
+//             </Box>
+//           );
+//         })
+//       )}
+//     </Box>
+//   );
+// };
 
-export default Messages;
+// export default Messages;
 
 // import React, { useEffect, useRef } from "react";
 // import { Box, Typography } from "@mui/material";
@@ -281,3 +284,159 @@ export default Messages;
 // export default Messages;
 
 
+// Messages.tsx
+// Messages.tsx
+// Messages.tsx
+import React, { useEffect } from "react";
+import { Box, Typography } from "@mui/material";
+import useChatState from "../store/useChatState";
+import useAuthState from "../store/useAuthCheck";
+import AccessTimeIcon from '@mui/icons-material/AccessTime';
+import DoneIcon from '@mui/icons-material/Done';
+
+const isOnlyEmoji = (text: string): boolean => {
+  if (!text) return false;
+  const emojiRegex =
+    /^(?:\p{Emoji_Presentation}|\p{Extended_Pictographic}|\p{Emoji})+$/gu;
+  const stripped = text.trim().replace(/\s+/g, "");
+  return emojiRegex.test(stripped);
+};
+
+const Messages: React.FC = () => {
+  const {
+    messages,
+    selectedUser,
+    getMessages,
+    isMessagesLoading,
+    isMessageSending,
+  } = useChatState();
+
+  const { userAuth } = useAuthState();
+
+  useEffect(() => {
+    if (selectedUser?._id) {
+      getMessages(selectedUser._id);
+    }
+  }, [selectedUser?._id]);
+
+  return (
+    <Box
+      sx={{
+        flex: 1,
+        overflowY: "auto",
+        p: 2,
+        backgroundColor: "#0a0a0a", // dark neon background
+      }}
+    >
+      {isMessagesLoading ? (
+        <Typography variant="body2" color="gray" align="center">
+          Loading messages...
+        </Typography>
+      ) : messages.length === 0 ? (
+        <Typography variant="body2" color="gray" align="center">
+          No messages yet.
+        </Typography>
+      ) : (
+        messages.map((msg: any, index: number) => {
+          const isSentByMe = msg.senderID === userAuth?._id;
+          return (
+            <Box
+              key={msg._id || index}
+              sx={{
+                display: "flex",
+                justifyContent: isSentByMe ? "flex-end" : "flex-start",
+                mb: 1,
+              }}
+            >
+              <Box
+                sx={{
+                  background: isSentByMe
+                    ? "linear-gradient(135deg, #ff0080,rgb(225, 0, 255))"  // pink-orange neon
+                    : "linear-gradient(135deg, #8e2de2,rgb(0, 108, 224))",  // purple neon
+                  color: "#fff",
+                  p: 1.2,
+                  borderRadius: isSentByMe
+                    ? "16px 0px 16px 16px"
+                    : "0px 16px 16px 16px",
+                  maxWidth: "70%",
+                  wordBreak: "break-word",
+                  boxShadow: "0 0 12px rgba(255, 0, 128, 0.6)",
+                  position: "relative",
+                  backdropFilter: "blur(8px)",
+                }}
+              >
+                {msg.image && (
+                  <Box mt={msg.text ? 1 : 0}>
+                    <img
+                      src={msg.image}
+                      alt="sent"
+                      style={{
+                        maxWidth: "200px",
+                        maxHeight: "200px",
+                        borderRadius: "8px",
+                        border: "1px solid #fff3",
+                      }}
+                    />
+                  </Box>
+                )}
+
+                {msg.text && (
+                  <Typography
+                    variant="body2"
+                    sx={{
+                      fontSize: isOnlyEmoji(msg.text) ? "2rem" : "1rem",
+                      lineHeight: 1.5,
+                      textAlign: isSentByMe ? "right" : "left",
+                      whiteSpace: "pre-wrap",
+                    }}
+                  >
+                    {msg.text}
+                  </Typography>
+                )}
+
+                <Box
+                  sx={{
+                    display: "flex",
+                    alignItems: "center",
+                    gap: "4px",
+                    fontSize: "0.75rem",
+                    color: "#eee",
+                    justifyContent: "flex-end",
+                    mt: 0.5,
+                  }}
+                >
+                  <Typography variant="caption">
+                    {(() => {
+                      try {
+                        const time = new Date(msg.createdAt);
+                        if (isNaN(time.getTime())) throw new Error("Invalid date");
+                        return time.toLocaleTimeString([], {
+                          hour: "2-digit",
+                          minute: "2-digit",
+                        });
+                      } catch {
+                        return "⏳";
+                      }
+                    })()}
+                  </Typography>
+                  
+                  {isSentByMe && (
+                    <>
+                      {isMessageSending ? (
+                        <AccessTimeIcon fontSize="inherit" />
+                      ): (
+                        <DoneIcon fontSize="inherit" />
+                      )}
+                    </>
+                  )}
+                </Box>
+              </Box>
+            </Box>
+          );
+        })
+      )}
+    </Box>
+  );
+};
+
+export default Messages;

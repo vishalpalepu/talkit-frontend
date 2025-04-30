@@ -39,14 +39,20 @@ const ChatInput: React.FC = () => {
   // Send image (if one exists) or text message
   const handleSend = async  () => {
     if(message.trim() || imageFile){
-      await sendMessage({
-        text : message.trim(),
-        imageFile : imageFile
-      })
+
+      const text = message.trim();
+      const image =  imageFile;
+
       setMessage("");
       setShowEmojiPicker(false);
       setImagePreview(null);
       setImageFile(null);
+
+      await sendMessage({
+        text : text,
+        imageFile : image
+      })
+      
     }
   };
 

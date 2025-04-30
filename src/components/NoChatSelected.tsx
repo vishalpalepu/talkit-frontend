@@ -11,7 +11,7 @@ const NoChatSelected: React.FC = () => {
       alignItems="center"
     >
       <motion.img
-        src="https://res.cloudinary.com/dcykirrjp/image/upload/v1744297375/yiqqevwjp8ifh4gkowkk.png"
+        src="https://res.cloudinary.com/dcykirrjp/image/upload/v1745991995/talkit/messages/ubnmucipo9ihukq6por4.png"
         alt="Talkit Logo"
         style={{ width: 180, marginBottom: 20 }}
         animate={{
