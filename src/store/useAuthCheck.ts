@@ -1,6 +1,7 @@
 import {create} from 'zustand';
 import api from '../lib/axios'
 import { toast } from 'react-hot-toast';
+import useSocketState from './useSocketState';
 
 interface AuthState {
     userAuth : any | null;
@@ -8,11 +9,13 @@ interface AuthState {
     isLogginnIn : boolean;
     isSigningUp : boolean;
     isUpdatingProfile : boolean;
+    onlineUsers : string[],
     checkAuth: ()=> Promise<void>;
     signUp :(data :RegisterFormData ) =>Promise<void>;
     login  :(data:LoginFormData) =>Promise<void>;
     logout :()=>Promise<void>;
     updatePhoto : (data :File)=>Promise<void>;
+    setOnlineUsers : (usersIds : string[])=>void,
 }
 
 type RegisterFormData = {
@@ -23,18 +26,21 @@ type RegisterFormData = {
 
 type LoginFormData = Omit<RegisterFormData,'name'>;
 
-const useAuthCheck = create<AuthState>((set)=>({
+const useAuthCheck = create<AuthState>((set,get)=>({
 
     userAuth : null,
     isCheckingAuth: true,
     isLogginnIn : false,
     isSigningUp : false,
     isUpdatingProfile : false,
+    onlineUsers : [],
+    socket : null,
 
     checkAuth :async ()=>{
         try{
             const res = await api.get("/auth/check")
             set({userAuth : res.data.user})
+            useSocketState.getState().connectSocket();
         }catch(err){
             console.log(err);
             set({userAuth : null});
@@ -48,8 +54,8 @@ const useAuthCheck = create<AuthState>((set)=>({
             set({isSigningUp : true})
             const res = await api.post("/auth/register",data);
             if(res.data.success) toast.success(res.data.message);
-            if(!res.data.success) toast.error(res.data.message);
             set({userAuth : res.data.user});
+            useSocketState.getState().connectSocket();
         }catch(err){
             console.log(err);
             set({userAuth : null});
@@ -63,8 +69,8 @@ const useAuthCheck = create<AuthState>((set)=>({
             set({isLogginnIn : true});
             const res = await api.post("/auth/login",data);
             if(res.data.success) toast.success(res.data.message);
-            if(res.data.success === false) toast.error(res.data.message);
             set({userAuth : res.data.user});
+            useSocketState.getState().connectSocket();
         }catch(err){
             console.log(err);
             set({userAuth : null});
@@ -76,7 +82,7 @@ const useAuthCheck = create<AuthState>((set)=>({
         try{
             const res = await api.post("/auth/logout");
             if(res.data.success) toast.success(res.data.message);
-            else toast.error(res.data.message);
+            useSocketState.getState().disconnectSocket();
         }catch(err){
             console.log(err);
             set({userAuth : null});
@@ -102,6 +108,9 @@ const useAuthCheck = create<AuthState>((set)=>({
         }finally{
             set({isUpdatingProfile : false});
         }
+    },
+    setOnlineUsers : (userIds)=>{
+        set({onlineUsers : userIds})
     }
 }))
 

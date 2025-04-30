@@ -8,6 +8,7 @@ import {
   Typography,
 } from "@mui/material";
 import useChatState from "../store/useChatState";
+import useAuthCheck from "../store/useAuthCheck";
 
 const Sidebar = () => {
   const {
@@ -18,7 +19,8 @@ const Sidebar = () => {
     setSelectedUser, // make sure this is part of your store
   } = useChatState();
 
-  const onlineUsers :any = [];
+  const {onlineUsers} = useAuthCheck();
+
 
   useEffect(() => {
     getUsers();

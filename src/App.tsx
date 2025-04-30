@@ -11,7 +11,7 @@ import { Toaster } from 'react-hot-toast';
 
 const App : React.FC = () => {
 
-    let { userAuth, isCheckingAuth, checkAuth } = useAuthCheck();
+    let { userAuth, isCheckingAuth, checkAuth,onlineUsers } = useAuthCheck();
 
     useEffect(() => {
         checkAuth();
