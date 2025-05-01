@@ -1,57 +1,7 @@
-// // Messages.tsx
-// import React from "react";
-// import { Box, Typography } from "@mui/material";
-// import useChatState from "../store/useChatState";
+// Messages.tsx
 
-// const Messages: React.FC = () => {
-//   const { messages, selectedUser } = useChatState();
 
-//   return (
-//     <Box
-//       sx={{
-//         flex: 1,
-//         overflowY: "auto",
-//         p: 2,
-//         backgroundColor: "#121212",
-//       }}
-//     >
-//       {messages.length === 0 ? (
-//         <Typography variant="body2" color="gray" align="center">
-//           No messages yet.
-//         </Typography>
-//       ) : (
-//         messages.map((msg: any, index: number) => (
-//           <Box
-//             key={index}
-//             sx={{
-//               display: "flex",
-//               justifyContent:
-//                 msg.senderId === selectedUser?._id ? "flex-end" : "flex-start",
-//               mb: 1,
-//             }}
-//           >
-//             <Box
-//               sx={{
-//                 bgcolor: msg.senderId === selectedUser?._id ? "#d81b60" : "#6a1b9a",
-//                 color: "white",
-//                 p: 1,
-//                 borderRadius: 2,
-//                 maxWidth: "70%",
-//                 wordBreak: "break-word",
-//               }}
-//             >
-//               <Typography variant="body2">{msg.text}</Typography>
-//             </Box>
-//           </Box>
-//         ))
-//       )}
-//     </Box>
-//   );
-// };
-
-// export default Messages;
-
-// 2nd trial successful
+// 2nd trial successful 2nd priority 
 
 // import React, { useEffect } from "react";
 // import { Box, Typography } from "@mui/material";
@@ -161,10 +111,14 @@
 
 // export default Messages;
 
-// import React, { useEffect, useRef } from "react";
+//1st priority 
+// Messages.tsx
+// import React, { useEffect } from "react";
 // import { Box, Typography } from "@mui/material";
 // import useChatState from "../store/useChatState";
 // import useAuthState from "../store/useAuthCheck";
+// import AccessTimeIcon from '@mui/icons-material/AccessTime';
+// import DoneIcon from '@mui/icons-material/Done';
 
 // const isOnlyEmoji = (text: string): boolean => {
 //   if (!text) return false;
@@ -180,36 +134,28 @@
 //     selectedUser,
 //     getMessages,
 //     isMessagesLoading,
+//     isMessageSending,
+//     subscribeToMessage,
+//     unSubscribeToMessage,
 //   } = useChatState();
 
 //   const { userAuth } = useAuthState();
 
-//   const messagesEndRef = useRef<HTMLDivElement | null>(null); // Create a ref for the end of messages
-//   const messagesContainerRef = useRef<HTMLDivElement | null>(null); // Ref for the message container
-
 //   useEffect(() => {
 //     if (selectedUser?._id) {
 //       getMessages(selectedUser._id);
+//       subscribeToMessage();
+//       return ()=>unSubscribeToMessage();
 //     }
 //   }, [selectedUser?._id]);
 
-//   // Scroll to bottom whenever messages change
-//   useEffect(() => {
-//     if (messagesContainerRef.current) {
-//       messagesContainerRef.current.scrollTop = messagesContainerRef.current.scrollHeight;
-//     }
-//   }, [messages]);
-
 //   return (
 //     <Box
-//       ref={messagesContainerRef} // Attach the container ref
 //       sx={{
 //         flex: 1,
 //         overflowY: "auto",
 //         p: 2,
-//         backgroundColor: "#121212",
-//         display: "flex",
-//         flexDirection: "column-reverse", // Makes sure the scroll starts from the bottom
+//         backgroundColor: "#0a0a0a", // dark neon background
 //       }}
 //     >
 //       {isMessagesLoading ? (
@@ -223,10 +169,9 @@
 //       ) : (
 //         messages.map((msg: any, index: number) => {
 //           const isSentByMe = msg.senderID === userAuth?._id;
-
 //           return (
 //             <Box
-//               key={index}
+//               key={msg._id || index}
 //               sx={{
 //                 display: "flex",
 //                 justifyContent: isSentByMe ? "flex-end" : "flex-start",
@@ -235,12 +180,19 @@
 //             >
 //               <Box
 //                 sx={{
-//                   bgcolor: isSentByMe ? "#d81b60" : "#6a1b9a",
-//                   color: "white",
+//                   background: isSentByMe
+//                     ? "linear-gradient(135deg, #ff0080,rgb(225, 0, 255))"  // pink-orange neon
+//                     : "linear-gradient(135deg, #8e2de2,rgb(0, 108, 224))",  // purple neon
+//                   color: "#fff",
 //                   p: 1.2,
-//                   borderRadius: 2,
+//                   borderRadius: isSentByMe
+//                     ? "16px 0px 16px 16px"
+//                     : "0px 16px 16px 16px",
 //                   maxWidth: "70%",
 //                   wordBreak: "break-word",
+//                   boxShadow: "0 0 12px rgba(255, 0, 128, 0.6)",
+//                   position: "relative",
+//                   backdropFilter: "blur(8px)",
 //                 }}
 //               >
 //                 {msg.image && (
@@ -252,6 +204,7 @@
 //                         maxWidth: "200px",
 //                         maxHeight: "200px",
 //                         borderRadius: "8px",
+//                         border: "1px solid #fff3",
 //                       }}
 //                     />
 //                   </Box>
@@ -264,19 +217,54 @@
 //                       fontSize: isOnlyEmoji(msg.text) ? "2rem" : "1rem",
 //                       lineHeight: 1.5,
 //                       textAlign: isSentByMe ? "right" : "left",
+//                       whiteSpace: "pre-wrap",
 //                     }}
 //                   >
 //                     {msg.text}
 //                   </Typography>
 //                 )}
+
+//                 <Box
+//                   sx={{
+//                     display: "flex",
+//                     alignItems: "center",
+//                     gap: "4px",
+//                     fontSize: "0.75rem",
+//                     color: "#eee",
+//                     justifyContent: "flex-end",
+//                     mt: 0.5,
+//                   }}
+//                 >
+//                   <Typography variant="caption">
+//                     {(() => {
+//                       try {
+//                         const time = new Date(msg.createdAt);
+//                         if (isNaN(time.getTime())) throw new Error("Invalid date");
+//                         return time.toLocaleTimeString([], {
+//                           hour: "2-digit",
+//                           minute: "2-digit",
+//                         });
+//                       } catch {
+//                         return "⏳";
+//                       }
+//                     })()}
+//                   </Typography>
+                  
+//                   {isSentByMe && (
+//                     <>
+//                       {isMessageSending ? (
+//                         <AccessTimeIcon fontSize="inherit" />
+//                       ): (
+//                         <DoneIcon fontSize="inherit" />
+//                       )}
+//                     </>
+//                   )}
+//                 </Box>
 //               </Box>
 //             </Box>
 //           );
 //         })
 //       )}
-
-//       {/* This div will help to scroll to the bottom */}
-//       <div ref={messagesEndRef} />
 //     </Box>
 //   );
 // };
@@ -284,9 +272,8 @@
 // export default Messages;
 
 
-// Messages.tsx
-// Messages.tsx
-// Messages.tsx
+//testing 
+
 import React, { useEffect } from "react";
 import { Box, Typography } from "@mui/material";
 import useChatState from "../store/useChatState";
@@ -302,6 +289,68 @@ const isOnlyEmoji = (text: string): boolean => {
   return emojiRegex.test(stripped);
 };
 
+// Group messages by date
+const groupMessagesByDate = (messages: any[]) => {
+  return messages.reduce((acc: Record<string, any[]>, message) => {
+    const date = new Date(message.createdAt).toDateString();
+    if (!acc[date]) acc[date] = [];
+    acc[date].push(message);
+    return acc;
+  }, {});
+};
+
+// Neon-style Date Separator
+const DateSeparator = ({ date }: { date: string }) => {
+  const dateObj = new Date(date);
+  const dayName = dateObj.toLocaleDateString(undefined, { weekday: "long" });
+  const dateStr = dateObj.toLocaleDateString(undefined, {
+    day: "2-digit",
+    month: "2-digit",
+    year: "numeric",
+  });
+
+  return (
+    <Box
+  sx={{
+    display: "flex",
+    alignItems: "center",
+    my: 2,
+    color: "#ccc",           // slightly greyish text
+    fontSize: "0.85rem",
+    justifyContent: "center",
+  }}
+>
+  {/* Left line */}
+  <Box
+    sx={{
+      flex: 1,
+      height: "2px",
+      bgcolor: "#ccc",       // same greyish color
+      boxShadow: "0 0 6px #ccc",
+      mx: 1,
+    }}
+  />
+
+  {/* Day and Date */}
+  <Typography sx={{ whiteSpace: "nowrap", mx: 1 }}>
+    {dayName} {dateStr}
+  </Typography>
+
+  {/* Right line */}
+  <Box
+    sx={{
+      flex: 1,
+      height: "2px",
+      bgcolor: "#ccc",
+      boxShadow: "0 0 6px #ccc",
+      mx: 1,
+    }}
+  />
+</Box>
+
+  );
+};
+
 const Messages: React.FC = () => {
   const {
     messages,
@@ -309,6 +358,8 @@ const Messages: React.FC = () => {
     getMessages,
     isMessagesLoading,
     isMessageSending,
+    subscribeToMessage,
+    unSubscribeToMessage,
   } = useChatState();
 
   const { userAuth } = useAuthState();
@@ -316,8 +367,12 @@ const Messages: React.FC = () => {
   useEffect(() => {
     if (selectedUser?._id) {
       getMessages(selectedUser._id);
+      subscribeToMessage();
+      return () => unSubscribeToMessage();
     }
   }, [selectedUser?._id]);
+
+  const groupedMessages = groupMessagesByDate(messages);
 
   return (
     <Box
@@ -325,7 +380,7 @@ const Messages: React.FC = () => {
         flex: 1,
         overflowY: "auto",
         p: 2,
-        backgroundColor: "#0a0a0a", // dark neon background
+        backgroundColor: "#0a0a0a",
       }}
     >
       {isMessagesLoading ? (
@@ -337,106 +392,112 @@ const Messages: React.FC = () => {
           No messages yet.
         </Typography>
       ) : (
-        messages.map((msg: any, index: number) => {
-          const isSentByMe = msg.senderID === userAuth?._id;
-          return (
-            <Box
-              key={msg._id || index}
-              sx={{
-                display: "flex",
-                justifyContent: isSentByMe ? "flex-end" : "flex-start",
-                mb: 1,
-              }}
-            >
-              <Box
-                sx={{
-                  background: isSentByMe
-                    ? "linear-gradient(135deg, #ff0080,rgb(225, 0, 255))"  // pink-orange neon
-                    : "linear-gradient(135deg, #8e2de2,rgb(0, 108, 224))",  // purple neon
-                  color: "#fff",
-                  p: 1.2,
-                  borderRadius: isSentByMe
-                    ? "16px 0px 16px 16px"
-                    : "0px 16px 16px 16px",
-                  maxWidth: "70%",
-                  wordBreak: "break-word",
-                  boxShadow: "0 0 12px rgba(255, 0, 128, 0.6)",
-                  position: "relative",
-                  backdropFilter: "blur(8px)",
-                }}
-              >
-                {msg.image && (
-                  <Box mt={msg.text ? 1 : 0}>
-                    <img
-                      src={msg.image}
-                      alt="sent"
-                      style={{
-                        maxWidth: "200px",
-                        maxHeight: "200px",
-                        borderRadius: "8px",
-                        border: "1px solid #fff3",
-                      }}
-                    />
-                  </Box>
-                )}
-
-                {msg.text && (
-                  <Typography
-                    variant="body2"
-                    sx={{
-                      fontSize: isOnlyEmoji(msg.text) ? "2rem" : "1rem",
-                      lineHeight: 1.5,
-                      textAlign: isSentByMe ? "right" : "left",
-                      whiteSpace: "pre-wrap",
-                    }}
-                  >
-                    {msg.text}
-                  </Typography>
-                )}
-
+        Object.entries(groupedMessages).map(([date, msgs]) => (
+          <React.Fragment key={date}>
+            <DateSeparator date={date} />
+            {msgs.map((msg: any, index: number) => {
+              const isSentByMe = msg.senderID === userAuth?._id;
+              return (
                 <Box
+                  key={msg._id || index}
                   sx={{
                     display: "flex",
-                    alignItems: "center",
-                    gap: "4px",
-                    fontSize: "0.75rem",
-                    color: "#eee",
-                    justifyContent: "flex-end",
-                    mt: 0.5,
+                    justifyContent: isSentByMe ? "flex-end" : "flex-start",
+                    mb: 1,
                   }}
                 >
-                  <Typography variant="caption">
-                    {(() => {
-                      try {
-                        const time = new Date(msg.createdAt);
-                        if (isNaN(time.getTime())) throw new Error("Invalid date");
-                        return time.toLocaleTimeString([], {
-                          hour: "2-digit",
-                          minute: "2-digit",
-                        });
-                      } catch {
-                        return "⏳";
-                      }
-                    })()}
-                  </Typography>
-                  
-                  {isSentByMe && (
-                    <>
-                      {isMessageSending ? (
-                        <AccessTimeIcon fontSize="inherit" />
-                      ): (
-                        <DoneIcon fontSize="inherit" />
+                  <Box
+                    sx={{
+                      background: isSentByMe
+                        ? "linear-gradient(135deg, #ff0080, rgb(225, 0, 255))"
+                        : "linear-gradient(135deg, #8e2de2, rgb(0, 108, 224))",
+                      color: "#fff",
+                      p: 1.2,
+                      borderRadius: isSentByMe
+                        ? "16px 0px 16px 16px"
+                        : "0px 16px 16px 16px",
+                      maxWidth: "70%",
+                      wordBreak: "break-word",
+                      boxShadow: "0 0 12px rgba(255, 0, 128, 0.6)",
+                      position: "relative",
+                      backdropFilter: "blur(8px)",
+                    }}
+                  >
+                    {msg.image && (
+                      <Box mt={msg.text ? 1 : 0}>
+                        <img
+                          src={msg.image}
+                          alt="sent"
+                          style={{
+                            maxWidth: "200px",
+                            maxHeight: "200px",
+                            borderRadius: "8px",
+                            border: "1px solid #fff3",
+                          }}
+                        />
+                      </Box>
+                    )}
+
+                    {msg.text && (
+                      <Typography
+                        variant="body2"
+                        sx={{
+                          fontSize: isOnlyEmoji(msg.text) ? "2rem" : "1rem",
+                          lineHeight: 1.5,
+                          textAlign: isSentByMe ? "right" : "left",
+                          whiteSpace: "pre-wrap",
+                        }}
+                      >
+                        {msg.text}
+                      </Typography>
+                    )}
+
+                    <Box
+                      sx={{
+                        display: "flex",
+                        alignItems: "center",
+                        gap: "4px",
+                        fontSize: "0.75rem",
+                        color: "#eee",
+                        justifyContent: "flex-end",
+                        mt: 0.5,
+                      }}
+                    >
+                      <Typography variant="caption">
+                        {(() => {
+                          try {
+                            const time = new Date(msg.createdAt);
+                            if (isNaN(time.getTime())) throw new Error("Invalid date");
+                            return time.toLocaleTimeString([], {
+                              hour: "2-digit",
+                              minute: "2-digit",
+                            });
+                          } catch {
+                            return "⏳";
+                          }
+                        })()}
+                      </Typography>
+
+                      {isSentByMe && (
+                        <>
+                          {isMessageSending ? (
+                            <AccessTimeIcon fontSize="inherit" />
+                          ) : (
+                            <DoneIcon fontSize="inherit" />
+                          )}
+                        </>
                       )}
-                    </>
-                  )}
+                    </Box>
+                  </Box>
                 </Box>
-              </Box>
-            </Box>
-          );
-        })
+              );
+            })}
+          </React.Fragment>
+        ))
       )}
     </Box>
   );
 };
 
 export default Messages;
+

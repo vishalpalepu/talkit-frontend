@@ -26,7 +26,11 @@ const ProfilePage: React.FC = () => {
   const fileInputRef = useRef<HTMLInputElement>(null);
   const theme = useTheme();
 
-  const handleAvatarClick = () => {
+useEffect(()=>{
+    checkAuth();
+  },[])
+
+const handleAvatarClick = () => {
     fileInputRef.current?.click();
   };
 
@@ -37,11 +41,9 @@ const {updatePhoto,checkAuth} = useAuthCheck();
     const file = event.target.files?.[0];
     if (file) {
       await updatePhoto(file);
+      checkAuth();
     }
   };
-  useEffect(()=>{
-    checkAuth();
-  },[userAuth,updatePhoto,isUpdatingProfile])
 
   return (
     <>

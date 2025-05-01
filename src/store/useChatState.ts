@@ -2,6 +2,7 @@ import {create} from "zustand";
 import api from "../lib/axios";
 import toast from "react-hot-toast";
 import { imageListClasses } from "@mui/material";
+import useSocketState from "./useSocketState";
 
 interface chatState {
     messages : string[],
@@ -14,6 +15,8 @@ interface chatState {
     getMessages : (userId : string) =>Promise<void>
     setSelectedUser : (selectUser : UserData | null) => void
     sendMessage : (messageData : {text : string , imageFile : File | null }) => Promise<void>
+    subscribeToMessage : ()=>void,
+    unSubscribeToMessage : ()=>void
 }
 
 type UserData = {
@@ -90,6 +93,19 @@ const useChatState = create<chatState>((set,get)=>({
         }finally{
             set({isMessageSending : false})
         }
+    },
+    subscribeToMessage : ()=>{
+        const {selectedUser} = get();
+        if(!selectedUser) return;
+
+        const socket = useSocketState.getState().socket;
+        socket?.on("newMessage",(message)=>{
+            set({messages : [...get().messages,message]})
+        })
+    },
+    unSubscribeToMessage : ()=>{
+        const socket = useSocketState.getState().socket;
+        socket?.off("newMessage");
     }
 }))
 
