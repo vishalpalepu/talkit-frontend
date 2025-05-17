@@ -1,7 +1,8 @@
 import axios, { AxiosInstance } from 'axios';
 
 const api: AxiosInstance = axios.create({
-  baseURL: "http://localhost:3030", 
+  // baseURL: "http://localhost:3030", .
+  baseURL: "https://talkit-6k0f.onrender.com",
   withCredentials : true,
   headers: {
     "Content-Type": "application/json",

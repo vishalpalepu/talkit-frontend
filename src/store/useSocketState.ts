@@ -14,7 +14,7 @@ const useSocketState = create<SocketState>((set,get)=>({
         const userAuth = useAuthCheck.getState().userAuth;
 
         if(!userAuth || get().socket?.connected) return;
-        const socket = io("http://localhost:3030",{
+        const socket = io("https://talkit-6k0f.onrender.com",{
             query : {
                 userId : userAuth._id,
             }
