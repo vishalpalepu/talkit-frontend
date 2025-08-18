@@ -3,6 +3,8 @@ import api from "../lib/axios";
 import toast from "react-hot-toast";
 import { imageListClasses } from "@mui/material";
 import useSocketState from "./useSocketState";
+import useAuthCheck from "./useAuthCheck"
+import { getBotReplyGemini } from "../utils/aiChatbot";
 
 interface chatState {
     messages : string[],
@@ -70,6 +72,7 @@ const useChatState = create<chatState>((set,get)=>({
             const {selectedUser, messages } = get();
             set({isMessageSending : true});
             if(selectedUser){
+                console.log("inside useChatState sendMessage -> selectedUser : ",selectedUser);//debugging
                 const formData = new FormData();
                 formData.append("text",messageData.text);
                 if(messageData.imageFile){
@@ -85,6 +88,27 @@ const useChatState = create<chatState>((set,get)=>({
                 })
                 if(res.data.success) toast.success(res.data.message);
                 set({messages : [...messages,res.data.data]})
+
+                if (selectedUser._id === "68132dcd75c25f175854a206") {
+                    await get().getMessages(selectedUser._id);
+                }
+
+                // if (selectedUser._id === "68132dcd75c25f175854a206") {
+                //     const sender = useAuthCheck.getState().userAuth._id;
+                //     const aires = await getBotReplyGemini(messageData.text);
+                //     const formData2 = new FormData();
+                //     formData2.append("text", aires || "talkito could not respond to your message");
+                //     console.log(aires);
+                  
+                //     const res2 = await api.post(`/message/send/${sender}`, formData2, {
+                //       headers: {
+                //         "Content-Type": "multipart/form-data",
+                //       },
+                //       withCredentials: true,
+                //     });
+                //     if (res2.data.success) toast.success(res2.data.message);
+                //     set({ messages: [...messages, res2.data.data] });
+                //   }
             }
             else set({isMessageSending : false})
         }catch(err){
